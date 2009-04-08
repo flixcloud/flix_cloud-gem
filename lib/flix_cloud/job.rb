@@ -46,6 +46,23 @@ class FlixCloud::Job < FlixCloud::Record
     response.success?
   end
 
+  def save!
+    raise FlixCloud::SaveError unless save
+    true
+  end
+
+  def self.create(attrs={})
+    job = FlixCloud::Job.new(attrs)
+    job.save
+    job
+  end
+
+  def self.create!(attrs={})
+    job = create(attrs)
+    raise FlixCloud::CreationError unless job.id
+    job
+  end
+
   def to_xml
     xml = Builder::XmlMarkup.new
 

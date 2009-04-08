@@ -254,4 +254,136 @@ class FlixCloud::JobTest < Test::Unit::TestCase
       assert_equal 'your-watermark-password', @job.file_locations.watermark.parameters.password
     end
   end
+
+
+  context "When calling save! on an invalid job" do
+    setup do
+      @job = FlixCloud::Job.new
+    end
+
+    should "raise a FlixCloud::SaveError" do
+      assert_raises FlixCloud::SaveError do
+        @job.save!
+      end
+    end
+  end
+
+
+  context "When calling save! on a valid job" do
+    setup do
+      FakeWeb.allow_net_connect = false
+      FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
+                                                                :status => ['200', 'OK'])
+      @job = FlixCloud::Job.new(:api_key => 'your-api-key',
+                                :recipe_id => 2,
+                                :input_url          => 'your-input-url',
+                                :input_user         => 'your-input-user',
+                                :input_password     => 'your-input-password',
+                                :output_url         => 'your-output-url',
+                                :output_user        => 'your-output-user',
+                                :output_password    => 'your-output-password',
+                                :watermark_url      => 'your-watermark-url',
+                                :watermark_user     => 'your-watermark-user',
+                                :watermark_password => 'your-watermark-password')
+    end
+
+    teardown do
+      FakeWeb.clean_registry
+      FakeWeb.allow_net_connect = true
+    end
+
+    should "return true" do
+      assert_equal true, @job.save
+    end
+  end
+
+  context "When creating an invalid job" do
+    setup do
+      @job = FlixCloud::Job.create
+    end
+
+    should "return a FlixCloud::Job" do
+      assert @job.is_a?(FlixCloud::Job)
+    end
+
+    should "have errors on the job" do
+      assert !@job.errors.empty?
+    end
+  end
+
+  context "When creating a valid job" do
+    setup do
+      FakeWeb.allow_net_connect = false
+      FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
+                                                                :status => ['200', 'OK'])
+      @job = FlixCloud::Job.create(:api_key => 'your-api-key',
+                                   :recipe_id => 2,
+                                   :input_url          => 'your-input-url',
+                                   :input_user         => 'your-input-user',
+                                   :input_password     => 'your-input-password',
+                                   :output_url         => 'your-output-url',
+                                   :output_user        => 'your-output-user',
+                                   :output_password    => 'your-output-password',
+                                   :watermark_url      => 'your-watermark-url',
+                                   :watermark_user     => 'your-watermark-user',
+                                   :watermark_password => 'your-watermark-password')
+    end
+
+    teardown do
+      FakeWeb.clean_registry
+      FakeWeb.allow_net_connect = true
+    end
+
+    should "return a FlixCloud::Job" do
+      assert @job.is_a?(FlixCloud::Job)
+    end
+
+    should "not have errors on the job" do
+      assert @job.errors.empty?
+    end
+
+    should "have an id set" do
+      assert_not_nil @job.id
+    end
+  end
+
+  context "When using create! to create an invalid job" do
+    should "raise a FlixCloud::CreationError exception" do
+      assert_raises FlixCloud::CreationError do
+        @job = FlixCloud::Job.create!
+      end
+    end
+  end
+
+  context "When using create! to create a valid job" do
+    setup do
+      FakeWeb.allow_net_connect = false
+      FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
+                                                                :status => ['200', 'OK'])
+      @job = FlixCloud::Job.create!(:api_key => 'your-api-key',
+                                    :recipe_id => 2,
+                                    :input_url          => 'your-input-url',
+                                    :input_user         => 'your-input-user',
+                                    :input_password     => 'your-input-password',
+                                    :output_url         => 'your-output-url',
+                                    :output_user        => 'your-output-user',
+                                    :output_password    => 'your-output-password',
+                                    :watermark_url      => 'your-watermark-url',
+                                    :watermark_user     => 'your-watermark-user',
+                                    :watermark_password => 'your-watermark-password')
+    end
+
+    teardown do
+      FakeWeb.clean_registry
+      FakeWeb.allow_net_connect = true
+    end
+
+    should "return a job" do
+      assert @job.is_a?(FlixCloud::Job)
+    end
+
+    should "return a job with an id" do
+      assert_not_nil @job.id
+    end
+  end
 end
