@@ -9,7 +9,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'flix_cloud'
 
 class Test::Unit::TestCase
-  def stub_rest_client_response(code, message, body)
-    stub(:code => code, :message => message, :to_s => body)
+  def stub_rest_client_response(code, body)
+    stub(:code => code, :to_s => body)
   end
 end

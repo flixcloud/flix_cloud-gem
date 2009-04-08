@@ -4,7 +4,7 @@ class FlixCloud::ResponseTest < Test::Unit::TestCase
 
   context "A response initialized with a rest client response" do
     setup do
-      @rest_client_response = stub_rest_client_response(200, 'Successful', '<?xml version="1.0" encoding="UTF-8"?><something>wonderful</something>')
+      @rest_client_response = stub_rest_client_response(200, '<?xml version="1.0" encoding="UTF-8"?><something>wonderful</something>')
       @response = FlixCloud::Response.new(@rest_client_response)
     end
 
@@ -27,7 +27,7 @@ class FlixCloud::ResponseTest < Test::Unit::TestCase
 
   context "A response initialized with a rest client response with a blank message body" do
     setup do
-      @response = FlixCloud::Response.new(stub_rest_client_response(200, 'Successful', ''))
+      @response = FlixCloud::Response.new(stub_rest_client_response(200, ''))
     end
 
     should "be successful" do
@@ -41,7 +41,7 @@ class FlixCloud::ResponseTest < Test::Unit::TestCase
 
   context "A response initialized with a rest client response with a message body of errors" do
     setup do
-      @response = FlixCloud::Response.new(stub_rest_client_response(200, 'Successful', '<?xml version="1.0" encoding="UTF-8"?><errors><error>There was an error doing something</error></errors>'))
+      @response = FlixCloud::Response.new(stub_rest_client_response(200, '<?xml version="1.0" encoding="UTF-8"?><errors><error>There was an error doing something</error></errors>'))
     end
 
     should "not be successful" do
