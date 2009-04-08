@@ -52,14 +52,14 @@ class FlixCloud::Job < FlixCloud::Record
   end
 
   def self.create(attrs={})
-    job = FlixCloud::Job.new(attrs)
+    job = new(attrs)
     job.save
     job
   end
 
   def self.create!(attrs={})
     job = create(attrs)
-    raise FlixCloud::CreationError unless job.id
+    raise FlixCloud::CreateError unless job.id
     job
   end
 

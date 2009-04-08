@@ -349,7 +349,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
 
   context "When using create! to create an invalid job" do
     should "raise a FlixCloud::CreationError exception" do
-      assert_raises FlixCloud::CreationError do
+      assert_raises FlixCloud::CreateError do
         @job = FlixCloud::Job.create!
       end
     end
