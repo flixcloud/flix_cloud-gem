@@ -1,6 +1,6 @@
-# Both methods ripped directly out of rails
 module FlixCloud
   module Extensions
+    # Both methods ripped directly out of rails
     module Hash
       def deep_merge(other_hash)
         self.merge(other_hash) do |key, oldval, newval|
