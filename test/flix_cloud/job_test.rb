@@ -16,8 +16,20 @@ class FlixCloud::JobTest < Test::Unit::TestCase
       assert_match /file_locations is required/, @job.errors.to_s
     end
 
-    should "require recipe_id" do
-      assert_match /recipe_id is required/, @job.errors.to_s
+    should "require recipe_id or recipe_name" do
+      assert_match /recipe_id or recipe_name is required/, @job.errors.to_s
+    end
+  end
+
+
+  context "When validating a job object with both recipe_id and recipe_name are set" do
+    setup do
+      @job = FlixCloud::Job.new(:recipe_name => 'recipe-name', :recipe_id => 1)
+      @job.valid?
+    end
+
+    should "require that both recipe_id and recipe_name cannot be used" do
+      assert_match /recipe_id and recipe_name cannot both be used/, @job.errors.to_s
     end
   end
 
@@ -97,6 +109,28 @@ class FlixCloud::JobTest < Test::Unit::TestCase
   end
 
 
+  context "A job with recipe_id set" do
+    setup do
+      @job = FlixCloud::Job.new(:recipe_id => 1)
+    end
+
+    should "serialize to xml and include the recipe_id, not the recipe_name" do
+      assert_equal %{<?xml version="1.0" encoding="UTF-8"?><api-request><api-key></api-key><recipe-id>1</recipe-id></api-request>}, @job.to_xml
+    end
+  end
+
+
+  context "A job with a recipe_name set" do
+    setup do
+      @job = FlixCloud::Job.new(:recipe_name => 'recipe-name')
+    end
+
+    should "serialize to xml and include the recipe_name, not the recipe_id" do
+      assert_equal %{<?xml version="1.0" encoding="UTF-8"?><api-request><api-key></api-key><recipe-name>recipe-name</recipe-name></api-request>}, @job.to_xml
+    end
+  end
+
+
   context "A job with all attributes set" do
     setup do
       @job = FlixCloud::Job.new(:recipe_id => 1,
@@ -157,12 +191,11 @@ class FlixCloud::JobTest < Test::Unit::TestCase
 
     context "when saving with malformed xml (should really never happen, but what if?)" do
       setup do
-        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><errors><error>Malformed XML received, please check the syntax of your XML</error></errors>},
-                                                                  :status => ['400', 'Bad Request'])
+        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :status => ['400', 'Bad Request'])
       end
 
       should "raise a RequestFailed error" do
-        assert_raises RestClient::RequestFailed do
+        assert_raises FlixCloud::RequestFailed do
           @job.save
         end
       end
@@ -171,12 +204,24 @@ class FlixCloud::JobTest < Test::Unit::TestCase
 
     context "when saving and the schema doesn't validate (should really never happen, but what if?)" do
       setup do
-        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><errors><error>You are missing this thing and that thing</error></errors>},
-                                                                  :status => ['400', 'Bad Request'])
+        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :status => ['400', 'Bad Request'])
       end
 
       should "raise a RequestFailed error" do
-        assert_raises RestClient::RequestFailed do
+        assert_raises FlixCloud::RequestFailed do
+          @job.save
+        end
+      end
+    end
+
+
+    context "when saving and the api-key is not valid" do
+      setup do
+        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :status => ['401', 'Unauthorized'])
+      end
+
+      should "raise an Unauthorized error" do
+        assert_raises FlixCloud::Unauthorized do
           @job.save
         end
       end

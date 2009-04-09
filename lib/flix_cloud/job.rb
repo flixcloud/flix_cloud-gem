@@ -1,6 +1,6 @@
 class FlixCloud::Job < FlixCloud::Record
 
-  attr_accessor :id, :initialized_at, :api_key, :recipe_id, :response
+  attr_accessor :id, :initialized_at, :api_key, :recipe_id, :recipe_name, :response
 
   record_column :file_locations, 'FileLocations'
 
@@ -20,8 +20,12 @@ class FlixCloud::Job < FlixCloud::Record
       self.errors << "file_locations is required"
     end
 
-    unless recipe_id
-      self.errors << "recipe_id is required"
+    if recipe_id || recipe_name
+      if recipe_id && recipe_name
+        self.errors << "recipe_id and recipe_name cannot both be used"
+      end
+    else
+      self.errors << "recipe_id or recipe_name is required"
     end
 
     unless api_key
@@ -34,7 +38,7 @@ class FlixCloud::Job < FlixCloud::Record
   def save
     return false unless valid?
 
-    self.response = FlixCloud::Response.new(post('jobs', to_xml))
+    self.response = post('jobs', to_xml)
 
     if response.success?
       self.id = response.body_as_hash['job']['id']
@@ -70,7 +74,12 @@ class FlixCloud::Job < FlixCloud::Record
 
     xml.tag!("api-request") do
       xml.tag!("api-key", api_key)
-      xml.tag!("recipe-id", recipe_id)
+
+      if recipe_name
+        xml.tag!("recipe-name", recipe_name)
+      else
+        xml.tag!("recipe-id", recipe_id)
+      end
 
       if file_locations
         xml.tag!("file-locations") do

@@ -30,9 +30,14 @@ class FlixCloud::Record
 protected
 
   def post(path, body)
-    RestClient::Resource.new(
-      "https://flixcloud.com/#{path}",
-      :verify_ssl => OpenSSL::SSL::VERIFY_PEER).post(body, :content_type => 'application/xml', :accept => 'application/xml')
+    begin
+      FlixCloud::Response.new(RestClient::Resource.new("https://flixcloud.com/#{path}",
+                                                       :verify_ssl => OpenSSL::SSL::VERIFY_PEER).post(body, :content_type => 'application/xml', :accept => 'application/xml'))
+    rescue RestClient::Unauthorized
+      raise FlixCloud::Unauthorized
+    rescue RestClient::RequestFailed
+      raise FlixCloud::RequestFailed
+    end
   end
 
 end
