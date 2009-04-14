@@ -1,8 +1,8 @@
 class FlixCloud::FileLocations < FlixCloud::Record
 
-  record_column :input, 'InputFile'
-  record_column :output, 'OutputFile'
-  record_column :watermark, 'WatermarkFile'
+  record_column :input, 'File'
+  record_column :output, 'File'
+  record_column :watermark, 'File'
 
   def valid?
     self.errors = []

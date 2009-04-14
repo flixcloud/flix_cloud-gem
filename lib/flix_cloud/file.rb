@@ -1,6 +1,6 @@
 class FlixCloud::File < FlixCloud::Record
 
-  attr_accessor :url
+  attr_accessor :url, :size, :width, :height, :duration
 
   record_column :parameters, 'Parameters'
 

@@ -338,7 +338,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     end
 
     should "return true" do
-      assert_equal true, @job.save
+      assert_equal true, @job.save!
     end
   end
 
