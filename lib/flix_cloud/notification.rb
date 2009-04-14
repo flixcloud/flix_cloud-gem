@@ -17,4 +17,16 @@ class FlixCloud::Notification < FlixCloud::Record
     super(attrs)
   end
 
+  def successful?
+    state == 'successful_job'
+  end
+
+  def failed?
+    state == 'failed_job'
+  end
+
+  def cancelled?
+    state == 'cancelled_job'
+  end
+
 end
