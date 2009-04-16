@@ -37,7 +37,7 @@ protected
     rescue RestClient::ServerBrokeConnection
       raise FlixCloud::ServerBrokeConnection
     rescue RestClient::RequestTimeout
-      raise FlixCloud::RequestFailed
+      raise FlixCloud::RequestTimeout
     end
   end
 

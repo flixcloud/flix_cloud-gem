@@ -363,6 +363,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     end
   end
 
+
   context "When creating an invalid job" do
     setup do
       @job = FlixCloud::Job.create
@@ -376,6 +377,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
       assert !@job.errors.empty?
     end
   end
+
 
   context "When creating a valid job" do
     setup do
@@ -413,6 +415,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     end
   end
 
+
   context "When using create! to create an invalid job" do
     should "raise a FlixCloud::CreationError exception" do
       assert_raises FlixCloud::CreateError do
@@ -420,6 +423,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
       end
     end
   end
+
 
   context "When using create! to create a valid job" do
     setup do
@@ -452,4 +456,52 @@ class FlixCloud::JobTest < Test::Unit::TestCase
       assert_not_nil @job.id
     end
   end
+
+
+  context "When calling save on a valid job and the server connection gets interrupted" do
+    setup do
+      RestClient::Resource.expects(:new).raises(RestClient::ServerBrokeConnection)
+      @job = FlixCloud::Job.new(:api_key => 'your-api-key',
+                                :recipe_id => 2,
+                                :input_url          => 'your-input-url',
+                                :input_user         => 'your-input-user',
+                                :input_password     => 'your-input-password',
+                                :output_url         => 'your-output-url',
+                                :output_user        => 'your-output-user',
+                                :output_password    => 'your-output-password',
+                                :watermark_url      => 'your-watermark-url',
+                                :watermark_user     => 'your-watermark-user',
+                                :watermark_password => 'your-watermark-password')
+    end
+
+    should "railse a FlixCloud::ServerBrokeConnection exception" do
+      assert_raises FlixCloud::ServerBrokeConnection do
+        @job.save
+      end
+    end
+  end
+
+  context "When calling save on a valid job and the connection times out" do
+    setup do
+      RestClient::Resource.expects(:new).raises(RestClient::RequestTimeout)
+      @job = FlixCloud::Job.new(:api_key => 'your-api-key',
+                                :recipe_id => 2,
+                                :input_url          => 'your-input-url',
+                                :input_user         => 'your-input-user',
+                                :input_password     => 'your-input-password',
+                                :output_url         => 'your-output-url',
+                                :output_user        => 'your-output-user',
+                                :output_password    => 'your-output-password',
+                                :watermark_url      => 'your-watermark-url',
+                                :watermark_user     => 'your-watermark-user',
+                                :watermark_password => 'your-watermark-password')
+    end
+
+    should "railse a FlixCloud::ServerBrokeConnection exception" do
+      assert_raises FlixCloud::RequestTimeout do
+        @job.save
+      end
+    end
+  end
+
 end
