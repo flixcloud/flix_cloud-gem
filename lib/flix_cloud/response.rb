@@ -11,7 +11,7 @@ class FlixCloud::Response
   end
 
   def success?
-    errors.empty?
+    201 == code.to_i
   end
 
 

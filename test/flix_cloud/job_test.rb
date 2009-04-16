@@ -191,26 +191,44 @@ class FlixCloud::JobTest < Test::Unit::TestCase
 
     context "when saving with malformed xml (should really never happen, but what if?)" do
       setup do
-        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :status => ['400', 'Bad Request'])
+        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><errors><error>Malformed XML</error></errors>},
+                                                                  :status => ['400', 'Bad Request'])
       end
 
-      should "raise a RequestFailed error" do
-        assert_raises FlixCloud::RequestFailed do
-          @job.save
-        end
+      should "not be successful" do
+        assert !@job.save
+      end
+
+      should "have a 400 response code" do
+        @job.save
+        assert_equal 400, @job.response.code
+      end
+
+      should "store the errors on the job" do
+        @job.save
+        assert_equal ['Malformed XML'], @job.errors
       end
     end
 
 
-    context "when saving and the schema doesn't validate (should really never happen, but what if?)" do
+    context "when saving with an invalid schema (should really never happen, but what if?)" do
       setup do
-        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :status => ['400', 'Bad Request'])
+        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><errors><error>Schema is invalid</error></errors>},
+                                                                  :status => ['400', 'Bad Request'])
       end
 
-      should "raise a RequestFailed error" do
-        assert_raises FlixCloud::RequestFailed do
-          @job.save
-        end
+      should "not be successful" do
+        assert !@job.save
+      end
+
+      should "have a 400 response code" do
+        @job.save
+        assert_equal 400, @job.response.code
+      end
+
+      should "store the errors on the job" do
+        @job.save
+        assert_equal ['Schema is invalid'], @job.errors
       end
     end
 
@@ -220,10 +238,13 @@ class FlixCloud::JobTest < Test::Unit::TestCase
         FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :status => ['401', 'Unauthorized'])
       end
 
-      should "raise an Unauthorized error" do
-        assert_raises FlixCloud::Unauthorized do
-          @job.save
-        end
+      should "not be successful" do
+        assert !@job.save
+      end
+
+      should "have a 401 response code" do
+        @job.save
+        assert_equal 401, @job.response.code
       end
     end
 
@@ -247,7 +268,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     context "when saving was successful" do
       setup do
         FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
-                                                                  :status => ['200', 'OK'])
+                                                                  :status => ['201', 'Created'])
       end
 
       should "return true" do
@@ -318,7 +339,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     setup do
       FakeWeb.allow_net_connect = false
       FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
-                                                                :status => ['200', 'OK'])
+                                                                :status => ['201', 'Created'])
       @job = FlixCloud::Job.new(:api_key => 'your-api-key',
                                 :recipe_id => 2,
                                 :input_url          => 'your-input-url',
@@ -360,7 +381,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     setup do
       FakeWeb.allow_net_connect = false
       FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
-                                                                :status => ['200', 'OK'])
+                                                                :status => ['201', 'Created'])
       @job = FlixCloud::Job.create(:api_key => 'your-api-key',
                                    :recipe_id => 2,
                                    :input_url          => 'your-input-url',
@@ -404,7 +425,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     setup do
       FakeWeb.allow_net_connect = false
       FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
-                                                                :status => ['200', 'OK'])
+                                                                :status => ['201', 'Created'])
       @job = FlixCloud::Job.create!(:api_key => 'your-api-key',
                                     :recipe_id => 2,
                                     :input_url          => 'your-input-url',

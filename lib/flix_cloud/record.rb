@@ -34,9 +34,9 @@ protected
     begin
       FlixCloud::Response.new(RestClient::Resource.new("https://flixcloud.com/#{path}",
                                                        :verify_ssl => OpenSSL::SSL::VERIFY_PEER).post(body, :content_type => 'application/xml', :accept => 'application/xml'))
-    rescue RestClient::Unauthorized
-      raise FlixCloud::Unauthorized
-    rescue RestClient::RequestFailed
+    rescue RestClient::ServerBrokeConnection
+      raise FlixCloud::ServerBrokeConnection
+    rescue RestClient::RequestTimeout
       raise FlixCloud::RequestFailed
     end
   end
