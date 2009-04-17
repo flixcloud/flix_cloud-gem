@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{flix_cloud-gem}
-  s.version = "0.5.2"
+  s.version = "0.5.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nathan Sutton"]
@@ -29,14 +29,11 @@ Gem::Specification.new do |s|
     "lib/flix_cloud/response.rb",
     "test/flix_cloud/file_locations_test.rb",
     "test/flix_cloud/file_test.rb",
-    "test/flix_cloud/input_file_test.rb",
     "test/flix_cloud/job_test.rb",
     "test/flix_cloud/notification_test.rb",
-    "test/flix_cloud/output_files_test.rb",
     "test/flix_cloud/parameters_test.rb",
     "test/flix_cloud/record_test.rb",
     "test/flix_cloud/response_test.rb",
-    "test/flix_cloud/watermark_file_test.rb",
     "test/test_helper.rb"
   ]
   s.has_rdoc = true
@@ -48,14 +45,11 @@ Gem::Specification.new do |s|
   s.test_files = [
     "test/flix_cloud/file_locations_test.rb",
     "test/flix_cloud/file_test.rb",
-    "test/flix_cloud/input_file_test.rb",
     "test/flix_cloud/job_test.rb",
     "test/flix_cloud/notification_test.rb",
-    "test/flix_cloud/output_files_test.rb",
     "test/flix_cloud/parameters_test.rb",
     "test/flix_cloud/record_test.rb",
     "test/flix_cloud/response_test.rb",
-    "test/flix_cloud/watermark_file_test.rb",
     "test/test_helper.rb"
   ]
 
