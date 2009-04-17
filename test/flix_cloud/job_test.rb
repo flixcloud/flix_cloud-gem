@@ -460,7 +460,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
 
   context "When calling save on a valid job and the server connection gets interrupted" do
     setup do
-      RestClient::Resource.expects(:new).raises(RestClient::ServerBrokeConnection)
+      HttpClient::Resource.expects(:new).raises(HttpClient::ServerBrokeConnection)
       @job = FlixCloud::Job.new(:api_key => 'your-api-key',
                                 :recipe_id => 2,
                                 :input_url          => 'your-input-url',
@@ -481,9 +481,10 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     end
   end
 
+
   context "When calling save on a valid job and the connection times out" do
     setup do
-      RestClient::Resource.expects(:new).raises(RestClient::RequestTimeout)
+      HttpClient::Resource.expects(:new).raises(HttpClient::RequestTimeout)
       @job = FlixCloud::Job.new(:api_key => 'your-api-key',
                                 :recipe_id => 2,
                                 :input_url          => 'your-input-url',
@@ -497,8 +498,32 @@ class FlixCloud::JobTest < Test::Unit::TestCase
                                 :watermark_password => 'your-watermark-password')
     end
 
-    should "railse a FlixCloud::ServerBrokeConnection exception" do
+    should "railse a FlixCloud::RequestTimeout exception" do
       assert_raises FlixCloud::RequestTimeout do
+        @job.save
+      end
+    end
+  end
+
+
+  context "When calling save on a valid job and the connection is refused" do
+    setup do
+      HttpClient::Resource.expects(:new).raises(HttpClient::ConnectionRefused)
+      @job = FlixCloud::Job.new(:api_key => 'your-api-key',
+                                :recipe_id => 2,
+                                :input_url          => 'your-input-url',
+                                :input_user         => 'your-input-user',
+                                :input_password     => 'your-input-password',
+                                :output_url         => 'your-output-url',
+                                :output_user        => 'your-output-user',
+                                :output_password    => 'your-output-password',
+                                :watermark_url      => 'your-watermark-url',
+                                :watermark_user     => 'your-watermark-user',
+                                :watermark_password => 'your-watermark-password')
+    end
+
+    should "railse a FlixCloud::ConnectionRefused exception" do
+      assert_raises FlixCloud::ConnectionRefused do
         @job.save
       end
     end

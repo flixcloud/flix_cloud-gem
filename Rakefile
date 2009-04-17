@@ -11,7 +11,7 @@ begin
     gem.authors = ["Nathan Sutton"]
     gem.add_dependency('builder', '>= 2.1.2')
     gem.add_dependency('crack', '>= 0.1.1')
-    gem.add_dependency('rest-client', '>= 0.9.2')
+    gem.add_dependency('sevenwire-http_client', '>= 0.1.0')
 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

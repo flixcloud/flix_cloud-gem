@@ -1,5 +1,5 @@
 require 'builder'
-require 'restclient'
+require 'http_client'
 require 'crack/xml'
 
 module FlixCloud; end

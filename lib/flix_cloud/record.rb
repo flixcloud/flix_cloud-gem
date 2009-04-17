@@ -32,12 +32,14 @@ protected
 
   def post(path, body)
     begin
-      FlixCloud::Response.new(RestClient::Resource.new("https://flixcloud.com/#{path}",
+      FlixCloud::Response.new(HttpClient::Resource.new("https://flixcloud.com/#{path}",
                                                        :verify_ssl => OpenSSL::SSL::VERIFY_PEER).post(body, :content_type => 'application/xml', :accept => 'application/xml'))
-    rescue RestClient::ServerBrokeConnection
-      raise FlixCloud::ServerBrokeConnection
-    rescue RestClient::RequestTimeout
-      raise FlixCloud::RequestTimeout
+    rescue HttpClient::ServerBrokeConnection
+      raise FlixCloud::ServerBrokeConnection, $!.message
+    rescue HttpClient::RequestTimeout
+      raise FlixCloud::RequestTimeout, $!.message
+    rescue HttpClient::ConnectionRefused
+      raise FlixCloud::ConnectionRefused, $!.message
     end
   end
 
