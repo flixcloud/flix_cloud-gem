@@ -118,6 +118,13 @@ class FlixCloud::Job < FlixCloud::Record
               end
             end
           end
+
+          if file_locations.thumbnails
+            xml.thumbnails do
+              xml.url(file_locations.thumbnails.url)
+              xml.prefix "thumb_"
+            end
+          end
         end
       end
     end
@@ -126,13 +133,13 @@ class FlixCloud::Job < FlixCloud::Record
   end
 
 
-protected
+  protected
 
   def shortcut_attributes=(attrs)
     translated_attributes = {}
 
     attrs.each do |key, value|
-      if match = key.to_s.match(/^(input|output|watermark)_(url|user|password)$/)
+      if match = key.to_s.match(/^(input|output|watermark|thumbnails)_(url|user|password)$/)
         file_type = match[1].to_sym
         parameter_type = match[2].to_sym
 
