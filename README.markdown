@@ -47,7 +47,8 @@ You can create jobs using the Job class:
                              :output_url => 'ftp://url/to/your/output/file',
                              :output_user => 'username-for-ftp-here',
                              :output_password => 'password-for-ftp-here',
-                             :watermark_url => 's3://url/to/your/watermark/file')
+                             :watermark_url => 's3://url/to/your/watermark/file',
+                             :thumbnails_url => 's3://url/to/your/thumbnail-out-file')
     job.valid?         # true or false
     job.save           # true or false
     job.id             # returns the id of the saved job, or nil if it failed to save
