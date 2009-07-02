@@ -133,7 +133,7 @@ class FlixCloud::Job < FlixCloud::Record
   end
 
 
-  protected
+protected
 
   def shortcut_attributes=(attrs)
     translated_attributes = {}
