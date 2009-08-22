@@ -1,6 +1,6 @@
 class FlixCloud::Job < FlixCloud::Record
 
-  attr_accessor :id, :initialized_at, :api_key, :recipe_id, :recipe_name, :response
+  attr_accessor :id, :initialized_at, :api_key, :recipe_id, :recipe_name, :response, :notification_url
 
   record_column :file_locations, 'FileLocations'
 
@@ -79,6 +79,10 @@ class FlixCloud::Job < FlixCloud::Record
         xml.tag!("recipe-name", recipe_name)
       else
         xml.tag!("recipe-id", recipe_id)
+      end
+
+      if notification_url
+        xml.tag!('notification-url', notification_url)
       end
 
       if file_locations
