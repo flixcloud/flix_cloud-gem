@@ -86,6 +86,15 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     end
   end
 
+  context "A job with pass-through set" do
+    setup do
+      @job = FlixCloud::Job.new(:pass_through => "some value")
+    end
+    
+    should "serialize to xml, excluding everything but api-key, recipe-id, and pass-through" do
+      assert_equal %{<?xml version="1.0" encoding="UTF-8"?><api-request><api-key></api-key><recipe-id></recipe-id><pass-through>some value</pass-through></api-request>}, @job.to_xml
+    end
+  end
 
   context "A job with file_locations and input set" do
     setup do

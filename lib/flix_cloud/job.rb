@@ -1,6 +1,6 @@
 class FlixCloud::Job < FlixCloud::Record
 
-  attr_accessor :id, :initialized_at, :api_key, :recipe_id, :recipe_name, :response, :notification_url
+  attr_accessor :id, :initialized_at, :api_key, :recipe_id, :recipe_name, :response, :notification_url, :pass_through
 
   record_column :file_locations, 'FileLocations'
 
@@ -88,7 +88,11 @@ class FlixCloud::Job < FlixCloud::Record
       if notification_url
         xml.tag!('notification-url', notification_url)
       end
-
+      
+      if pass_through
+        xml.tag!('pass-through', pass_through)
+      end
+      
       if file_locations
         xml.tag!("file-locations") do
           if file_locations.input
