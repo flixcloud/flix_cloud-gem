@@ -9,6 +9,10 @@ class FlixCloud::Job < FlixCloud::Record
     self.shortcut_attributes = attrs
   end
 
+  def self.status_of(id, api_key)
+    FlixCloud::JobStatus.new(get("jobs/#{id}/status").body, api_key)
+  end
+
   def valid?
     self.errors = []
 
