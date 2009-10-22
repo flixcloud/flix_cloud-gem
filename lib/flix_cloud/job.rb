@@ -10,7 +10,7 @@ class FlixCloud::Job < FlixCloud::Record
   end
 
   def self.status_of(id, api_key)
-    FlixCloud::JobStatus.new(get("jobs/#{id}/status").body, api_key)
+    FlixCloud::JobStatus.new(get("jobs/#{id}/status", api_key).body)
   end
 
   def valid?
