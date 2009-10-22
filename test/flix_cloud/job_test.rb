@@ -532,7 +532,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
   context "When getting the status of the Job" do
     setup do
       FakeWeb.allow_net_connect = false
-      FakeWeb.register_uri(:get, 'https://flixcloud.com/jobs/1/status', :body => %{<?xml version="1.0" encoding="UTF-8"?>
+      FakeWeb.register_uri(:get, 'https://name:1234:asdf:5678:ghjk@flixcloud.com/jobs/1/status', :body => %{<?xml version="1.0" encoding="UTF-8"?>
         <job>
           <id type="integer">1</id>
           <task-state>transcoding</task-state>
@@ -555,7 +555,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     end
 
     should "return a job status with the id given" do
-      status = FlixCloud::Job.status_of(1)
+      status = FlixCloud::Job.status_of(1, '1234:asdf:5678:ghjk')
       assert status.is_a?(FlixCloud::JobStatus)
       assert_equal 1, status.id
     end
