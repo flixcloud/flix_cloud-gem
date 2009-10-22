@@ -191,7 +191,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
 
     context "when saving with malformed xml (should really never happen, but what if?)" do
       setup do
-        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><errors><error>Malformed XML</error></errors>},
+        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :body => %{<?xml version="1.0" encoding="UTF-8"?><errors><error>Malformed XML</error></errors>},
                                                                   :status => ['400', 'Bad Request'])
       end
 
@@ -213,7 +213,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
 
     context "when saving with an invalid schema (should really never happen, but what if?)" do
       setup do
-        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><errors><error>Schema is invalid</error></errors>},
+        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :body => %{<?xml version="1.0" encoding="UTF-8"?><errors><error>Schema is invalid</error></errors>},
                                                                   :status => ['400', 'Bad Request'])
       end
 
@@ -251,7 +251,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
 
     context "when saving and there are errors on the job so it can't be saved" do
       setup do
-        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><errors><error>You are missing this thing and that thing</error></errors>},
+        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :body => %{<?xml version="1.0" encoding="UTF-8"?><errors><error>You are missing this thing and that thing</error></errors>},
                                                                   :status => ['200', 'OK'])
       end
 
@@ -267,7 +267,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
 
     context "when saving was successful" do
       setup do
-        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
+        FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :body => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
                                                                   :status => ['201', 'Created'])
       end
 
@@ -338,7 +338,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
   context "When calling save! on a valid job" do
     setup do
       FakeWeb.allow_net_connect = false
-      FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
+      FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :body => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
                                                                 :status => ['201', 'Created'])
       @job = FlixCloud::Job.new(:api_key => 'your-api-key',
                                 :recipe_id => 2,
@@ -382,7 +382,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
   context "When creating a valid job" do
     setup do
       FakeWeb.allow_net_connect = false
-      FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
+      FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :body => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
                                                                 :status => ['201', 'Created'])
       @job = FlixCloud::Job.create(:api_key => 'your-api-key',
                                    :recipe_id => 2,
@@ -428,7 +428,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
   context "When using create! to create a valid job" do
     setup do
       FakeWeb.allow_net_connect = false
-      FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :string => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
+      FakeWeb.register_uri(:post, 'https://flixcloud.com/jobs', :body => %{<?xml version="1.0" encoding="UTF-8"?><job><id type="integer">1</id><initialized-job-at type="datetime">2009-04-07T23:15:33+02:00</initialized-job-at></job>},
                                                                 :status => ['201', 'Created'])
       @job = FlixCloud::Job.create!(:api_key => 'your-api-key',
                                     :recipe_id => 2,

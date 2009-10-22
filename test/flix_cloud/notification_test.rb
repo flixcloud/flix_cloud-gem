@@ -35,6 +35,12 @@ class FlixCloud::NotificationTest < Test::Unit::TestCase
               <size>1234</size>
               <cost>321</cost>
             </watermark-file>
+            <thumbnail-media-file>
+              <url>http://dl.getdropbox.com/u/378873/zencoder_test.mov</url>
+              <total-size>123</total-size>
+              <cost>32</cost>
+              <number_of_thumbnails>3</number_of_thumbnails>
+            </thumbnail-media-file>
           </job>})
     end
 
@@ -63,6 +69,10 @@ class FlixCloud::NotificationTest < Test::Unit::TestCase
       assert_not_nil @notification.watermark_file.size
       assert_not_nil @notification.watermark_file.url
       assert_not_nil @notification.watermark_file.cost
+      assert_not_nil @notification.thumbnail_media_file.url
+      assert_not_nil @notification.thumbnail_media_file.total_size
+      assert_not_nil @notification.thumbnail_media_file.cost
+      assert_not_nil @notification.thumbnail_media_file.number_of_thumbnails
     end
   end
 

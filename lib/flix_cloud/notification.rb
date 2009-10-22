@@ -5,6 +5,7 @@ class FlixCloud::Notification < FlixCloud::Record
   record_column :input_media_file, 'File'
   record_column :output_media_file, 'File'
   record_column :watermark_file, 'File'
+  record_column :thumbnail_media_file, 'ThumbnailFile'
 
   def initialize(attrs={})
     if attrs.is_a?(String)
