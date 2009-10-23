@@ -96,6 +96,16 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     end
   end
 
+  context "A job with notification-url set" do
+    setup do
+      @job = FlixCloud::Job.new(:notification_url => "http://example.com/foo")
+    end
+    
+    should "serialize to xml, excluding everything but api-key, recipe-id, and pass-through" do
+      assert_equal %{<?xml version="1.0" encoding="UTF-8"?><api-request><api-key></api-key><recipe-id></recipe-id><notification-url>http://example.com/foo</notification-url></api-request>}, @job.to_xml
+    end
+  end
+
   context "A job with file_locations and input set" do
     setup do
       @job = FlixCloud::Job.new(:file_locations => {:input => {}})
