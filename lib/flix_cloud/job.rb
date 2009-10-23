@@ -3,6 +3,7 @@ class FlixCloud::Job < FlixCloud::Record
   attr_accessor :id, :initialized_at, :api_key, :recipe_id, :recipe_name, :response, :notification_url, :pass_through
 
   record_column :file_locations, 'FileLocations'
+  record_column :cue_points, 'CuePoints'
 
   def initialize(attrs={})
     super
