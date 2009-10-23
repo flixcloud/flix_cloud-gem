@@ -4,6 +4,7 @@ class FlixCloud::Job < FlixCloud::Record
 
   record_column :file_locations, 'FileLocations'
   record_column :cue_points, 'CuePoints'
+  record_column :recipe_settings, 'RecipeSettings'
 
   def initialize(attrs={})
     super
@@ -184,6 +185,14 @@ class FlixCloud::Job < FlixCloud::Record
               xml.prefix "thumb_"
             end
           end
+        end
+      end
+    end
+
+    if recipe_settings
+      xml.tag!('recipe-settings') do
+        FlixCloud::RecipeSettings.recipe_attributes.each do |attribute|
+          xml.tag!(attribute, recipe_settings.send(attribute)) if recipe_settings.send(attribute)
         end
       end
     end

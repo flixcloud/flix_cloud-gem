@@ -81,7 +81,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
       @job = FlixCloud::Job.new(:file_locations => {})
     end
 
-    should "serialize to xml, excluding everything but api-key, recipe-id, and file-locations" do
+    should "serialize to xml" do
       assert_equal %{<?xml version="1.0" encoding="UTF-8"?><api-request><api-key></api-key><recipe-id></recipe-id><file-locations></file-locations></api-request>}, @job.to_xml
     end
   end
@@ -91,7 +91,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
       @job = FlixCloud::Job.new(:pass_through => "some value")
     end
     
-    should "serialize to xml, excluding everything but api-key, recipe-id, and pass-through" do
+    should "serialize to xml" do
       assert_equal %{<?xml version="1.0" encoding="UTF-8"?><api-request><api-key></api-key><recipe-id></recipe-id><pass-through>some value</pass-through></api-request>}, @job.to_xml
     end
   end
@@ -101,10 +101,21 @@ class FlixCloud::JobTest < Test::Unit::TestCase
       @job = FlixCloud::Job.new(:notification_url => "http://example.com/foo")
     end
     
-    should "serialize to xml, excluding everything but api-key, recipe-id, and pass-through" do
+    should "serialize to xml" do
       assert_equal %{<?xml version="1.0" encoding="UTF-8"?><api-request><api-key></api-key><recipe-id></recipe-id><notification-url>http://example.com/foo</notification-url></api-request>}, @job.to_xml
     end
   end
+
+  context "A job with recipe-settings set" do
+    setup do
+      @job = FlixCloud::Job.new(:recipe_settings => {:width => 1})
+    end
+
+    should "serialize to xml" do
+      assert_equal %{<?xml version="1.0" encoding="UTF-8"?><api-request><api-key></api-key><recipe-id></recipe-id></api-request><recipe-settings><width>1</width></recipe-settings>}, @job.to_xml
+    end
+  end
+  
 
   context "A job with file_locations and input set" do
     setup do
