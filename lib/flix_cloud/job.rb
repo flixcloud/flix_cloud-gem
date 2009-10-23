@@ -94,6 +94,52 @@ class FlixCloud::Job < FlixCloud::Record
         xml.tag!('pass-through', pass_through)
       end
 
+      if cue_points
+        xml.tag!("cue-points") do
+          if cue_points.event
+            xml.event do
+              if cue_points.event.cue_point && !cue_points.event.cue_point.empty?
+                cue_points.event.cue_point.each do |cue_point|
+                  xml.tag!('cue-point') do
+                    xml.name(cue_point.name) if cue_point.name
+                    xml.time(cue_point.time) if cue_point.time
+                    if cue_point.parameter && !cue_point.parameter.empty?
+                      cue_point.parameter.each do |parameter|
+                        xml.parameter do
+                          xml.key(parameter.key) if parameter.key
+                          xml.value(parameter.value) if parameter.value
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+
+          if cue_points.navigation
+            xml.navigation do
+              if cue_points.navigation.cue_point && !cue_points.navigation.cue_point.empty?
+                cue_points.navigation.cue_point.each do |cue_point|
+                  xml.tag!('cue-point') do
+                    xml.name(cue_point.name) if cue_point.name
+                    xml.time(cue_point.time) if cue_point.time
+                    if cue_point.parameter && !cue_point.parameter.empty?
+                      cue_point.parameter.each do |parameter|
+                        xml.parameter do
+                          xml.key(parameter.key) if parameter.key
+                          xml.value(parameter.value) if parameter.value
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+
       if file_locations
         xml.tag!("file-locations") do
           if file_locations.input

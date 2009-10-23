@@ -170,6 +170,25 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     end
   end
 
+  context "A job with cue points set" do
+    setup do
+      @job = FlixCloud::Job.new({"cue_points"=>
+        {"event"=> {"cue_point"=> [{"name"=>"cuept3",
+                                    "parameter"=> [{"value"=>"Value1", "key"=>"First"}, {"value"=>"Value2", "key"=>"Second"}],
+                                    "time"=>"3.4"},
+                                   {"name"=>"cuept4", "time"=>"1.4"}]},
+         "navigation"=> {"cue_point"=> [{"name"=>"cuept1",
+                                         "parameter"=> [{"value"=>"Value1", "key"=>"First"},{"value"=>"Value2", "key"=>"Second"}],
+                                         "time"=>"3.4"},
+                                        {"name"=>"cuept2",
+                                         "parameter"=> [{"value"=>"value1", "key"=>"First"},{"value"=>"Value2", "key"=>"Second"}],
+                                         "time"=>"1.4"}]}}})
+    end
+
+    should "serialize everything to xml" do
+      assert_equal "<?xml version=\"1.0\" encoding=\"UTF-8\"?><api-request><api-key></api-key><recipe-id></recipe-id><cue-points><event><cue-point><name>cuept3</name><time>3.4</time><parameter><key>First</key><value>Value1</value></parameter><parameter><key>Second</key><value>Value2</value></parameter></cue-point><cue-point><name>cuept4</name><time>1.4</time></cue-point></event><navigation><cue-point><name>cuept1</name><time>3.4</time><parameter><key>First</key><value>Value1</value></parameter><parameter><key>Second</key><value>Value2</value></parameter></cue-point><cue-point><name>cuept2</name><time>1.4</time><parameter><key>First</key><value>value1</value></parameter><parameter><key>Second</key><value>Value2</value></parameter></cue-point></navigation></cue-points></api-request>", @job.to_xml
+    end
+  end
 
   context "An invalid job when attempting to save" do
     setup do
