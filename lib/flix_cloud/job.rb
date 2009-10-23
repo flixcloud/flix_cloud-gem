@@ -182,7 +182,13 @@ class FlixCloud::Job < FlixCloud::Record
           if file_locations.thumbnails
             xml.thumbnails do
               xml.url(file_locations.thumbnails.url)
-              xml.prefix "thumb_"
+              xml.prefix(file_locations.thumbnails.prefix)
+              if file_locations.thumbnails.parameters
+                xml.parameters do
+                  xml.user(file_locations.thumbnails.parameters.user)
+                  xml.password(file_locations.thumbnails.parameters.password)
+                end
+              end
             end
           end
         end
@@ -207,12 +213,14 @@ protected
     translated_attributes = {}
 
     attrs.each do |key, value|
-      if match = key.to_s.match(/^(input|output|watermark|thumbnails)_(url|user|password)$/)
+      if match = key.to_s.match(/^(input|output|watermark|thumbnails)_(url|user|password|prefix)$/)
         file_type = match[1].to_sym
         parameter_type = match[2].to_sym
 
         if parameter_type == :url
           translated_attributes.deep_merge!(:file_locations => { file_type => { :url => value}})
+        elsif parameter_type == :prefix
+          translated_attributes.deep_merge!(:file_locations => { file_type => { :prefix => value}})
         else
           translated_attributes.deep_merge!(:file_locations => { file_type => { :parameters => { parameter_type => value}}})
         end

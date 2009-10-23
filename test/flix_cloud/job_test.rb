@@ -90,7 +90,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     setup do
       @job = FlixCloud::Job.new(:pass_through => "some value")
     end
-    
+
     should "serialize to xml" do
       assert_equal %{<?xml version="1.0" encoding="UTF-8"?><api-request><api-key></api-key><recipe-id></recipe-id><pass-through>some value</pass-through></api-request>}, @job.to_xml
     end
@@ -100,7 +100,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     setup do
       @job = FlixCloud::Job.new(:notification_url => "http://example.com/foo")
     end
-    
+
     should "serialize to xml" do
       assert_equal %{<?xml version="1.0" encoding="UTF-8"?><api-request><api-key></api-key><recipe-id></recipe-id><notification-url>http://example.com/foo</notification-url></api-request>}, @job.to_xml
     end
@@ -115,7 +115,17 @@ class FlixCloud::JobTest < Test::Unit::TestCase
       assert_equal %{<?xml version="1.0" encoding="UTF-8"?><api-request><api-key></api-key><recipe-id></recipe-id></api-request><recipe-settings><width>1</width></recipe-settings>}, @job.to_xml
     end
   end
-  
+
+  context "A job with thumbnails set and a prefix set on the thumbnails" do
+    setup do
+      @job = FlixCloud::Job.new(:file_locations => {:thumbnails => {:url => 'http://example.com/foo', :prefix => 'thumb_prefix_', :parameters => {:user => 'your-user', :password => 'your-password'}}})
+    end
+
+    should "serialize to xml" do
+      assert_equal %{<?xml version="1.0" encoding="UTF-8"?><api-request><api-key></api-key><recipe-id></recipe-id><file-locations><thumbnails><url>http://example.com/foo</url><prefix>thumb_prefix_</prefix><parameters><user>your-user</user><password>your-password</password></parameters></thumbnails></file-locations></api-request>}, @job.to_xml
+    end
+  end
+
 
   context "A job with file_locations and input set" do
     setup do
@@ -161,7 +171,7 @@ class FlixCloud::JobTest < Test::Unit::TestCase
   end
 
 
-  context "A job with all attributes set" do
+  context "A job with many attributes set" do
     setup do
       @job = FlixCloud::Job.new(:recipe_id => 1,
                                 :api_key => 'this_is_an_api_key',
@@ -340,33 +350,44 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     setup do
       @job = FlixCloud::Job.new(:api_key => 'your-api-key',
                                 :recipe_id => 2,
-                                :input_url          => 'your-input-url',
-                                :input_user         => 'your-input-user',
-                                :input_password     => 'your-input-password',
-                                :output_url         => 'your-output-url',
-                                :output_user        => 'your-output-user',
-                                :output_password    => 'your-output-password',
-                                :watermark_url      => 'your-watermark-url',
-                                :watermark_user     => 'your-watermark-user',
-                                :watermark_password => 'your-watermark-password')
+                                :input_url           => 'your-input-url',
+                                :input_user          => 'your-input-user',
+                                :input_password      => 'your-input-password',
+                                :output_url          => 'your-output-url',
+                                :output_user         => 'your-output-user',
+                                :output_password     => 'your-output-password',
+                                :watermark_url       => 'your-watermark-url',
+                                :watermark_user      => 'your-watermark-user',
+                                :watermark_password  => 'your-watermark-password',
+                                :thumbnails_url      => 'your-thumbnails-url',
+                                :thumbnails_user     => 'your-thumbnails-user',
+                                :thumbnails_password => 'your-thumbnails-password',
+                                :thumbnails_prefix   => 'your-thumbnails-prefix')
     end
 
     should "set the urls" do
       assert_equal 'your-input-url', @job.file_locations.input.url
       assert_equal 'your-output-url', @job.file_locations.output.url
       assert_equal 'your-watermark-url', @job.file_locations.watermark.url
+      assert_equal 'your-thumbnails-url', @job.file_locations.thumbnails.url
     end
 
     should "set the users" do
       assert_equal 'your-input-user', @job.file_locations.input.parameters.user
       assert_equal 'your-output-user', @job.file_locations.output.parameters.user
       assert_equal 'your-watermark-user', @job.file_locations.watermark.parameters.user
+      assert_equal 'your-thumbnails-user', @job.file_locations.thumbnails.parameters.user
     end
 
     should "set the passwords" do
       assert_equal 'your-input-password', @job.file_locations.input.parameters.password
       assert_equal 'your-output-password', @job.file_locations.output.parameters.password
       assert_equal 'your-watermark-password', @job.file_locations.watermark.parameters.password
+      assert_equal 'your-thumbnails-password', @job.file_locations.thumbnails.parameters.password
+    end
+
+    should "set the thumbnails prefix" do
+      assert_equal 'your-thumbnails-prefix', @job.file_locations.thumbnails.prefix
     end
   end
 

@@ -3,7 +3,7 @@ class FlixCloud::FileLocations < FlixCloud::Record
   record_column :input, 'File'
   record_column :output, 'File'
   record_column :watermark, 'File'
-  record_column :thumbnails, 'File'
+  record_column :thumbnails, 'ThumbnailFile'
 
   def valid?
     self.errors = []
