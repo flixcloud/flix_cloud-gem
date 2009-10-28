@@ -398,9 +398,10 @@ class FlixCloud::JobTest < Test::Unit::TestCase
     end
 
     should "raise a FlixCloud::SaveError" do
-      assert_raises FlixCloud::SaveError do
+      error = assert_raises FlixCloud::SaveError do
         @job.save!
       end
+      assert_match /file_locations .* recipe_id .* api_key/, error.message 
     end
   end
 
@@ -488,9 +489,10 @@ class FlixCloud::JobTest < Test::Unit::TestCase
 
   context "When using create! to create an invalid job" do
     should "raise a FlixCloud::CreationError exception" do
-      assert_raises FlixCloud::CreateError do
+      error = assert_raises FlixCloud::CreateError do
         @job = FlixCloud::Job.create!
       end
+      assert_match /file_locations .* recipe_id .* api_key/, error.message 
     end
   end
 
